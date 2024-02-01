@@ -106,3 +106,47 @@ class ChessGame:
             print(f"Check! {self.current_player} is in check.")
 
         return True
+
+class ChessGame:
+    # ... (previous code)
+
+    def is_checkmate(self, player):
+        # Check if the player is in check
+        if not self.is_in_check(player):
+            return False
+
+        # Check if any move can get the player out of check
+        for start_row in range(8):
+            for start_col in range(8):
+                piece = self.board[start_row][start_col]
+
+                # Check if the piece belongs to the current player
+                if (player == 'White' and piece.isupper()) or \
+                   (player == 'Black' and piece.islower()):
+                    for end_row in range(8):
+                        for end_col in range(8):
+                            if self.make_move((start_row, start_col), (end_row, end_col)):
+                                # If the move is valid, check if the player is still in check
+                                if not self.is_in_check(player):
+                                    # Undo the move
+                                    self.board[start_row][start_col] = piece
+                                    self.board[end_row][end_col] = ' '
+                                    return False
+
+                                # Undo the move
+                                self.board[start_row][start_col] = piece
+                                self.board[end_row][end_col] = ' '
+
+        return True
+
+    def make_move(self, start, end):
+        # ... (previous code)
+
+        # Check for checkmate after the move
+        if self.is_checkmate(self.current_player):
+            print(f"Checkmate! {self.current_player} is checkmated.")
+            # You may want to end the game or handle checkmate differently here
+            # For simplicity, the game continues in this example.
+
+        return True
+
