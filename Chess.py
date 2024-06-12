@@ -45,6 +45,16 @@ class ChessGame:
 
             # Switch player turn
             self.current_player = 'White' if self.current_player == 'Black' else 'Black'
+
+            # Check for check after the move
+            if self.is_in_check(self.current_player):
+                print(f"Check! {self.current_player} is in check.")
+
+            # Check for checkmate after the move
+            if self.is_checkmate(self.current_player):
+                print(f"Checkmate! {self.current_player} is checkmated.")
+                # End the game or handle checkmate here
+
             return True
 
         print("Invalid move!")
@@ -54,28 +64,6 @@ class ChessGame:
         # Add logic for validating piece moves (not implemented in this simplified version)
         # This should be extended for each type of chess piece
         return True
-
-
-# Example usage:
-game = ChessGame()
-game.print_board()
-
-while True:
-    try:
-        start = tuple(map(int, input("Enter the start position (row col): ").split()))
-        end = tuple(map(int, input("Enter the end position (row col): ").split()))
-    except ValueError:
-        print("Invalid input. Please enter two space-separated integers.")
-        continue
-
-    if game.make_move(start, end):
-        game.print_board()
-
-    # Add logic for game over conditions (not implemented in this simplified version)
-    # Adding a check system
-
-class ChessGame:
-    # ... (previous code)
 
     def is_in_check(self, player):
         king_symbol = 'K' if player == 'White' else 'k'
@@ -98,18 +86,6 @@ class ChessGame:
 
         return False
 
-    def make_move(self, start, end):
-        # ... (previous code)
-
-        # Check for check after the move
-        if self.is_in_check(self.current_player):
-            print(f"Check! {self.current_player} is in check.")
-
-        return True
-
-class ChessGame:
-    # ... (previous code)
-
     def is_checkmate(self, player):
         # Check if the player is in check
         if not self.is_in_check(player):
@@ -125,28 +101,38 @@ class ChessGame:
                    (player == 'Black' and piece.islower()):
                     for end_row in range(8):
                         for end_col in range(8):
-                            if self.make_move((start_row, start_col), (end_row, end_col)):
-                                # If the move is valid, check if the player is still in check
+                            original_piece = self.board[end_row][end_col]
+                            if self.is_valid_piece_move((start_row, start_col), (end_row, end_col)):
+                                # Make the move temporarily
+                                self.board[end_row][end_col] = piece
+                                self.board[start_row][start_col] = ' '
+                                
+                                # Check if the player is still in check
                                 if not self.is_in_check(player):
                                     # Undo the move
                                     self.board[start_row][start_col] = piece
-                                    self.board[end_row][end_col] = ' '
+                                    self.board[end_row][end_col] = original_piece
                                     return False
 
                                 # Undo the move
                                 self.board[start_row][start_col] = piece
-                                self.board[end_row][end_col] = ' '
+                                self.board[end_row][end_col] = original_piece
 
         return True
 
-    def make_move(self, start, end):
-        # ... (previous code)
+# Example usage:
+game = ChessGame()
+game.print_board()
 
-        # Check for checkmate after the move
-        if self.is_checkmate(self.current_player):
-            print(f"Checkmate! {self.current_player} is checkmated.")
-            # You may want to end the game or handle checkmate differently here
-            # For simplicity, the game continues in this example.
+while True:
+    try:
+        start = tuple(map(int, input("Enter the start position (row col): ").split()))
+        end = tuple(map(int, input("Enter the end position (row col): ").split()))
+    except ValueError:
+        print("Invalid input. Please enter two space-separated integers.")
+        continue
 
-        return True
+    if game.make_move(start, end):
+        game.print_board()
 
+    # Add logic for game over conditions (not implemented in this simplified version)
